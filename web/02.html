@@ -1,0 +1,170 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>绘制图元完成事件(draw:created)</title>
+        <!-- 添加后台JAVA代码 -->
+        <script type="text/javahomework_war_exploded" src="../src/cn/ac/ucas/webgis/PgsServlet.java"></script>
+        <!-- 添加样式文件代码 -->
+        <link rel="stylesheet"type="text/css" href="map-02.css">
+        <!-- 引用JQuery文件库 -->
+        <script type="text/javascript" src='leaflet/lib/jquery-1.11.1.js'></script>
+        <!-- leaflet的css样式与js库 -->
+        <link rel="stylesheet" href="leaflet/lib/leaflet.css" />
+        <script type="text/javascript" src="leaflet/lib/leaflet-src.js"></script>
+        <!--  添加leaflet插件的引用 -->
+        <link rel="stylesheet" type="text/css" href="leaflet/lib/plugins/draw/leaflet.draw.css"/>
+        <script type="text/javascript" src="leaflet/lib/plugins/draw/leaflet.draw.js"></script>
+        <link rel="stylesheet" type="text/css" href="leaflet/lib/plugins/marker/MarkerCluster.Default.css">
+        <script type="text/javascript" src="leaflet/lib/plugins/"></script>
+        <title>北京市买房小帮手</title>
+
+        <script type="text/javascript">
+            var map = null; 
+
+            function init(){
+
+                map = L.map("main_div", {
+                    layers:[
+                        L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png')
+                    ],
+                    center: [39.90,116.39],
+                    zoom: 11,
+                });
+
+                var editableLayers = new L.FeatureGroup().addTo(map);
+
+                var options = {
+                    edit: {
+                        featureGroup: editableLayers
+                    }
+                };
+
+                var drawControl = new L.Control.Draw(options).addTo(map);
+
+                //1)绑定"draw:created"事件
+                map.on("draw:created", function (e) {
+                    //2)读取要素的类型和要素
+                    var type = e.layerType;     //要素类型
+                    var feature = e.layer;      //要素对象
+                
+                    if (type === 'marker') {
+                        layer.bindPopup('A popup!');
+                    }
+                    //3)将要素添加到图层上
+                    editableLayers.addLayer(feature);  
+                });
+            //L.marker([39.90,116.39]).addTo(map);
+            //L.circle([39.90,116.39],{color:'#FF0000',fillColor:'#FF0000',radius:1000,fillOpacity:1}).addTo(map);  
+            };
+			function buttonOKClick(){
+				var myselect=document.getElementById("downselect");	//拿到select对象
+				var index=myselect.selectedIndex;	// selectedIndex代表的是你所选中项的index
+				var Para_Price=myselect.options[index].getAttribute('value');
+                //alert(select.getElementsByTagName('downselect').value);
+                //alert(Para_Price);
+	            var url1 = "http://127.0.0.1:8080/javahomework_war_exploded/PgsServlet?Price="; //
+	            var url = url1.concat(Para_Price);
+	            var options = {method:'GET'};
+
+	            fetch(url,options
+	            	).then(res => res.text()
+	            	).then(res => console.log(res));
+	            // fetch(url,options
+	            // 	).then((respone)=> {
+	            // 		alert("OK");
+	            // 		console.log(respone.status);
+	            // 		return respone.json()
+	            // 	}).then((respone)=> {
+	            // 		alert("OK");
+	            // 		alert(respone.getAttribute);
+		           //  }).catch(function(e) {
+		           //  	alert("this is wrong in buttonOKClick");
+	            // }); 
+
+	            // fetch(url,options
+	            // 	).then((respone)=> {
+	            // 		alert("OK");
+	            // 		console.log(respone.status);
+	            // 		return respone.json()
+	            // 	}).then((respone)=> {
+	            // 		alert("OK");
+	            // 		alert(respone.getAttribute);
+		           //  }).catch(function(e) {
+		           //  	alert("this is wrong in buttonOKClick");
+	            // }); 
+		            
+	         //    var options = {
+	         //    	method:'POST',
+	         //    	body:Para_Price
+	        	// };
+		        // fetch(url1,options
+	         //    	).then((respone)=> {
+	         //    	return respone.json()
+	         //    	}).then((data)=> {
+	         //    		alert("OK");
+		        //     }).catch(function(e) {
+		        //     	alert("this is wrong in buttonOKClick");
+	         //    }); 
+
+		        // $.ajax({
+		        // 	type:"GET",
+		        // 	url:"http://127.0.0.1:8080/javahomework_war_exploded/PgsServlet?Price=10000",
+		        // 	traditional:true,
+		        // 	success:function(respone) {
+		        // 		alert("AJAX is OK");
+		        // 	},
+		        // 	error:function(e) {
+		        // 		alert("AJAX is Failure");
+		        // 	},
+		        // });
+
+		        var marker = L.marker([39.90,116.39])
+		        .addTo(map)                     //Marker添加到map
+		        .bindPopup("I'm a marker.")     //绑定Popup
+		        .openPopup();                   //弹出Popup
+	            // fetch(url1,options
+	            // ).then((respone)=> {
+	            // 	console.log(respone.headers.get("Price"));
+	            // 	console.log(respone.status);
+	            // 	console.log(respone.statusText);
+	            // 	return respone.json()
+	            // }).then(function(data) {
+	            // 	alert("OK");
+	            // }).catch(function(e) {
+	            // 	alert("this is wrong in buttonOKClick");
+	            // 	alert(url);
+	            // });   
+	        };
+        </script>
+            
+    </head>
+    <body onload="init()">
+	    <div id='head_div'>
+			<div id='search_div'>
+				<div id='logo_div'></div>
+				<div id='search_box'>
+					<ul>
+						<li>请选择房价条件 ： </li>
+						<li><select id="downselect">
+							<option value="10000">10000-30000</option>
+							<option value="30001-60000">30001-60000</option>
+							<option value="60001-100000">60001-100000</option>
+							<option value=">100000">>100000</option></select>
+						</li>
+						<li><a id='search_btn' href='#' onclick="buttonOKClick()">搜索</a></li>
+						<li><a id='search_btn' href='#' onclick="buttonOKClick()">显示所有</a></li>
+						<li><a id='search_btn' href='#' onclick="buttonOKClick()">清除所有</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div id="main_div"></div>	
+	</body>
+</html>
+
+
+
+
+
+
+
